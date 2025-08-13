@@ -16,6 +16,7 @@ class WeatherRepositoryImpl: WeatherRepository {
         self.apiClient = apiClient
     }
     
+    //AnyPublisher allows you to chain more Combine operators (map, retry, debounce, catch, etc.) before returning the value.
     func fetchWeather(lat: Double, lon: Double) -> AnyPublisher<WeatherResponse, Error> {
         let endpoint = WeatherAPI.fetchWeather(lat: lat, lon: lon, weatherApiKey: weatherApiKey)
         return apiClient.request(endpoint)
