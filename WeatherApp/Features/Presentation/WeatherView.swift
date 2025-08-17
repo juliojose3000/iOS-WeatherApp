@@ -8,11 +8,13 @@
 import SwiftUICore
 import SwiftUI
 import Combine
+import CoreLocation
 
 
 struct WeatherScreen: View {
     
     @StateObject var viewModel: WeatherViewModel
+    @StateObject private var locationManager = LocationManager()
     
     var body: some View {
         ZStack {
@@ -25,6 +27,11 @@ struct WeatherScreen: View {
             VStack {
                 
                 if(viewModel.isLoading) {
+                    
+                    ProgressView()
+                        .progressViewStyle(CircularProgressViewStyle(tint: .white))
+                        .scaleEffect(2)
+                        .padding()
                     
                 } else if let weather = viewModel.weather {
                     
@@ -40,7 +47,14 @@ struct WeatherScreen: View {
             
         }
         .onAppear {
-            viewModel.loadWeather(lat: 37.4220936, lon: -122.083922)
+            if let coord = locationManager.location {
+                viewModel.loadWeather(lat: coord.latitude, lon: coord.longitude)
+            }
+        }
+        .onChange(of: locationManager.location) { newLocation in
+            if let coord = newLocation {
+                viewModel.loadWeather(lat: coord.latitude, lon: coord.longitude)
+            }
         }
     }
     
@@ -117,7 +131,6 @@ struct BodyWeatherData: View {
             WeatherInfoCard(label: "Humidity: \(weatherData.main.humidity)%", systemImage: "drop.fill")
             WeatherInfoCard(label: String(format: "Wind: %.2f m/s", weatherData.wind.speed), systemImage: "wind")
             WeatherInfoCard(label: "Pressure: \(weatherData.main.pressure) hPa", systemImage: "gauge")
-            
             WeatherInfoCard(label: "Sunset: \(weatherData.sys.sunset.toTimeString())", systemImage: "sunset.fill")
         }
         Spacer()
