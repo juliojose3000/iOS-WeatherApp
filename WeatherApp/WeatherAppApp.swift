@@ -13,7 +13,8 @@ struct WeatherAppApp: App {
         WindowGroup {
             let apiClient = ApiClient(baseURL: URL(string: "https://api.openweathermap.org/data/2.5")!)
             let weatherRepo = WeatherRepositoryImpl(apiClient: apiClient)
-            WeatherScreen(viewModel: WeatherViewModel(repository: weatherRepo))
+            let weatherLocalRepo = WeatherLocalRepositoryImpl()
+            WeatherScreen(viewModel: WeatherViewModel(repository: weatherRepo, localRepository: weatherLocalRepo))
         }
     }
 }

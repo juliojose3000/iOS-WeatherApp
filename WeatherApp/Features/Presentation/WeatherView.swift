@@ -164,8 +164,21 @@ struct WeatherInfoCard: View {
 
 #Preview {
     let mockRepo = MockWeatherRepository()
-    let viewModel = WeatherViewModel(repository: mockRepo)
+    let mockLocalRepo = MockLocalRepository()
+    let viewModel = WeatherViewModel(repository: mockRepo, localRepository: mockLocalRepo)
     return WeatherScreen(viewModel: viewModel)
+}
+
+final class MockLocalRepository: WeatherLocalRepository {
+    private var storedWeather: WeatherResponse?
+
+    func save(weather: WeatherResponse) {
+        storedWeather = weather
+    }
+
+    func fetchLatest() -> WeatherResponse? {
+        return storedWeather
+    }
 }
 
 final class MockWeatherRepository: WeatherRepository {
