@@ -47,12 +47,12 @@ struct WeatherScreen: View {
             
         }
         .onAppear {
-            if let coord = locationManager.location {
+            if let coord = locationManager.location, viewModel.weather == nil {
                 viewModel.loadWeather(lat: coord.latitude, lon: coord.longitude)
             }
         }
         .onChange(of: locationManager.location) { newLocation in
-            if let coord = newLocation {
+            if let coord = newLocation, viewModel.weather == nil {
                 viewModel.loadWeather(lat: coord.latitude, lon: coord.longitude)
             }
         }
